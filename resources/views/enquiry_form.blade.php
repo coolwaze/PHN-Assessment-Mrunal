@@ -2,11 +2,10 @@
 <html>
 <head>
     <title>Enquiry Form</title>
-    <link href="https://www.phntechnology.com/assets/img/logo-nobg.png" rel="icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <style>
         body{
-            background-color: #31547c;
+            background-color: #7C53E3;
         }
         .form_bg{
             background-color: #fff;
@@ -16,6 +15,9 @@
             background-repeat: no-repeat;
             background-size: cover;
         }
+        .error{
+            color:red;
+        }
         
     </style>
 </head>
@@ -23,7 +25,7 @@
     <div class="container">
        
         <div class="row justify-content-center"> 
-        <h1 class="mt-2 text-center text-white mb-3">Enquiry Form</h1>
+        <h1 class="mt-2 text-center text-white mb-3">Mrunal - PHN Assessment Enquiry Form</h1>
             <div class="col-lg-7 form_bg"> 
                     @if (session('error'))
                         <div class="alert alert-danger mt-3">
@@ -35,32 +37,37 @@
                     @csrf
                     <div class="mb-3">
                         <label for="name" class="form-label">Name:</label>
-                        <input type="text" name="name" id="name" class="form-control" value="{{ old('name') }}" required pattern="[A-Za-z\s]+" title="Name should only contain alphabets" />
+                        <input type="text" name="name" id="name" class="form-control" value="{{ old('name') }}" />
+                        <span class='error' id='errorName'></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="email" class="form-label">Email:</label>
-                        <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}" required />
+                        <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}"  />
+                        <span class='error' id='errorEmail'></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="mobile" class="form-label">Mobile Number:</label>
-                        <input type="tel" name="mobile"  pattern="[0-9]{10}" id="mobile" class="form-control" value="{{ old('mobile') }}" required pattern="[0-9]{10}" title="Mobile number should be 10 digits" maxlength="10"/>
+                        <input type="tel" name="mobile"  pattern="[0-9]{10}" id="mobile" class="form-control" value="{{ old('mobile') }}" maxlength="10"/>
+                        <span class='error' id='errorMobile'></span>
                     </div>
                    
 
                     <div class="mb-3">
                         <label for="state" class="form-label">State:</label>
-                        <select name="state" id="state" class="form-select" value="{{ old('state') }}" required>
+                        <select name="state" id="state" class="form-select" value="{{ old('state') }}" >
                             <option value="">Select State</option>
                         </select>
+                        <span class='error' id='errorState'></span>
                     </div>
 
                     <div class="mb-3">
                         <label for="district" class="form-label">District:</label>
-                        <select name="district" id="district" value="{{ old('district') }}" class="form-select" required>
+                        <select name="district" id="district" value="{{ old('district') }}" class="form-select" >
                             <option value="">Select District</option>
                         </select>
+                        <span class='error' id='errorDistrict'></span>
                     </div>
 
                     <!-- Add Captcha field here -->
@@ -73,7 +80,8 @@
                         </div>
                         </div>
                         <div class="form-group mb-4">
-                            <input id="captcha" type="text" class="form-control" placeholder="Enter Captcha" name="captcha" required>
+                            <input id="captcha" type="text" class="form-control" placeholder="Enter Captcha" name="captcha" >
+                            <span class='error' id='errorCaptcha'></span>
                         </div>
 
                     <div class="text-center mb-3">
@@ -124,42 +132,67 @@
             var mobileInput = document.getElementById('mobile');
             var stateSelect = document.getElementById('state');
             var districtSelect = document.getElementById('district');
-
+            var captchaInput = document.getElementById('captcha');
+            $(".error").html('');    
             // Validate Name (Accepts only alphabets)
             var namePattern = /^[A-Za-z\s]+$/;
-            if (!namePattern.test(nameInput.value)) {
-                alert('Please enter a valid name (only alphabets are allowed).');
+            if(nameInput.value == ''){
+                $("#errorName").html('Please enter a name');
+                nameInput.focus();
+                return false;
+            }            
+            else if (!namePattern.test(nameInput.value)) {
+                $("#errorName").html('Please enter a valid name (only alphabets are allowed).');
                 nameInput.focus();
                 return false;
             }
 
             // Validate Email (HTML5 form validation)
-            if (!emailInput.checkValidity()) {
-                alert('Please enter a valid email address.');
+            if(emailInput.value == ''){
+                $("#errorEmail").html('Please enter email address.');
+                emailInput.focus();
+                return false;
+            }
+            else if (!emailInput.checkValidity()) {
+                $("#errorEmail").html('Please enter a valid email address.');
                 emailInput.focus();
                 return false;
             }
 
             // Validate Mobile Number (HTML5 pattern)
-            if (!mobileInput.checkValidity()) {
-                alert('Please enter a valid 10-digit mobile number.');
+            if(mobileInput.value == ''){
+                $("#errorMobile").html('Please enter mobile number.');
+                mobileInput.focus();
+                return false;
+            }
+            else if (!mobileInput.checkValidity()) {
+                $("#errorMobile").html('Please enter a valid 10-digit mobile number.');
                 mobileInput.focus();
                 return false;
             }
 
             // Validate State (Dropdown validation)
-            if (stateSelect.value === '') {
-                alert('Please select a state.');
+            if (stateSelect.value == '') {
+                $("#errorState").html('Please select a state.');
                 stateSelect.focus();
                 return false;
             }
 
             // Validate District (Dropdown validation)
             if (districtSelect.value === '') {
-                alert('Please select a district.');
+                $("#errorDistrict").html('Please select a district.');
                 districtSelect.focus();
                 return false;
             }
+
+            if (captchaInput.value === '') {
+                $("#errorCaptcha").html('Please enter a captcha.');
+                captchaInput.focus();
+                return false;
+            }
+
+
+
 
             // Add validation for captcha field here
 

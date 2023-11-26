@@ -48,7 +48,7 @@ class EnquiryController extends Controller
             $enquiry->save();
 
             // Send confirmation email
-            // Mail::to($enquiry->email)->send(new EnquiryConfirmationMail($enquiry));
+            Mail::to($enquiry->email)->send(new EnquiryConfirmationMail($enquiry));
 
             //Redirect to a success page or display a success message
             return redirect()->route('enquiry.success')->with('success', 'Enquiry submitted successfully.');
